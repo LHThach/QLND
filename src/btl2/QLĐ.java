@@ -31,7 +31,7 @@ public class QLĐ extends javax.swing.JFrame {
         }
         list = getListGrade();
         loadDbToTable();
-        loadDataToCbo()
+
     }
 
     public ArrayList<grade> getListGrade() {
@@ -196,8 +196,18 @@ public class QLĐ extends javax.swing.JFrame {
         });
 
         detele.setText("Detele");
+        detele.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deteleActionPerformed(evt);
+            }
+        });
 
         update.setText("Update");
+        update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Điểm trung bình");
 
@@ -359,7 +369,7 @@ public class QLĐ extends javax.swing.JFrame {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         grade sv = new grade();
         sv.fullname = fullName.getText();
-        sv.mon= mon.getText();
+        sv.mon = mon.getText();
         sv.dtx = Float.parseFloat(dtx.getText());
         sv.dgk = Float.parseFloat(dgk.getText());
         sv.dck = Float.parseFloat(dck.getText());
@@ -369,11 +379,11 @@ public class QLĐ extends javax.swing.JFrame {
             String sql = "INSERT INTO DiemSV(MSV, Mon, DiemTX,DiemGK,DiemCK,DiemTK) VALUES ( ?, ?, ?, ?,?,?)";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, msv.getText());
-            ps.setString(2,mon.getText());
+            ps.setString(2, mon.getText());
             ps.setFloat(3, sv.dtx);
             ps.setFloat(4, sv.dgk);
             ps.setFloat(5, sv.dck);
-            ps.setFloat(6,sv.avg);
+            ps.setFloat(6, sv.avg);
             ps.executeUpdate();
             JOptionPane.showMessageDialog(rootPane, "Lưu thành công!");
         } catch (Exception e) {
@@ -381,6 +391,41 @@ public class QLĐ extends javax.swing.JFrame {
         }
         fillTable();
     }//GEN-LAST:event_saveActionPerformed
+
+    private void deteleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deteleActionPerformed
+        index = tblQLD.getSelectedRow();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(rootPane, "Bạn chưa chọn hàng cần xóa");
+        } else {
+            this.deleteGrade();
+            list.remove(index);
+            fillTable();
+            this.btNewActionPerformed(evt);
+            JOptionPane.showMessageDialog(rootPane, "Đã xóa thành công!");
+        }
+    }//GEN-LAST:event_deteleActionPerformed
+
+    private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
+        index = tblQLD.getSelectedRow();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa chọn hàng cần cập nhật");
+        } else {
+            list.remove(index);
+            this.updateGrade();
+            grade sv = new grade();
+            sv.dtx = Float.parseFloat(dtx.getText());
+            sv.dgk = Float.parseFloat(dgk.getText());
+            sv.dck = Float.parseFloat(dck.getText());
+            dtk.setText(String.valueOf(sv.getAvg()));
+            list.add(sv);
+            fillTable();
+            JOptionPane.showMessageDialog(rootPane, "Cập nhật thành công!");
+        }
+    }//GEN-LAST:event_updateActionPerformed
+    private void tblQLDMouseClicked(java.awt.event.MouseEvent evt) {
+        index = tblQLD.getSelectedRow();
+        this.showDetail(index);
+    }
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
