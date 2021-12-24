@@ -116,7 +116,7 @@
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jLabel3" max="32767" attributes="0"/>
-                      <Component id="avg" max="32767" attributes="0"/>
+                      <Component id="dtk" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
               </Group>
@@ -164,7 +164,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="avg" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="dtk" min="-2" pref="35" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -222,11 +222,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="New"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btNewActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="save">
           <Properties>
             <Property name="text" type="java.lang.String" value="Save"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="detele">
           <Properties>
@@ -243,10 +249,7 @@
             <Property name="text" type="java.lang.String" value="&#x110;i&#x1ec3;m trung b&#xec;nh"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="avg">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jLabel8"/>
-          </Properties>
+        <Component class="javax.swing.JLabel" name="dtk">
         </Component>
       </SubComponents>
     </Container>

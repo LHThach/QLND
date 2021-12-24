@@ -1,4 +1,3 @@
-
 package btl2;
 
 import java.sql.Connection;
@@ -8,16 +7,17 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.table.DefaultTableModel;
 
-
 public class QLĐ extends javax.swing.JFrame {
+
     ArrayList<grade> list = new ArrayList<>();
     DefaultTableModel model;
     private Connection conn;
     int index = 0;
-    
+
     public QLĐ() {
         initComponents();
         setLocationRelativeTo(null);
@@ -33,9 +33,10 @@ public class QLĐ extends javax.swing.JFrame {
         loadDbToTable();
         loadDataToCbo()
     }
-public ArrayList<grade> getListGrade() {
+
+    public ArrayList<grade> getListGrade() {
         try {
-            String sql = "SELECT TOP 3 STUDENTS.MASV,HOTEN,TIENGANH,TINHOC,GDTC,(TIENGANH+TINHOC+GDTC)/3 AS TBM FROM STUDENTS JOIN GRADE\n"
+            String sql = "SELECT TOP 3 SV.MSV,HoTen,Mon,DiemTX,DiemGK,DiemCK,DiemTK\n"
                     + " ON STUDENTS.MASV = GRADE.MASV ORDER BY TBM DESC";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -47,7 +48,7 @@ public ArrayList<grade> getListGrade() {
                 sv.setDtx(Float.parseFloat(rs.getString("DiemTX")));
                 sv.setDgk(Float.parseFloat(rs.getString("DiemGK")));
                 sv.setDck(Float.parseFloat(rs.getString("DiemCK")));
-                
+
                 list.add(sv);
             }
         } catch (Exception e) {
@@ -61,34 +62,37 @@ public ArrayList<grade> getListGrade() {
         for (grade sv : list) {
             sv.msv = msv.getText();
             sv.fullname = fullName.getText();
-            Object row = new Object[]{sv.getMsv(),sv.getFullname(),sv.getMon(),sv.getDtx(),sv.getDgk(), sv.getDck(),sv.getAvg()};
+            Object row = new Object[]{sv.getMsv(), sv.getFullname(), sv.getMon(), sv.getDtx(), sv.getDgk(), sv.getDck(), sv.getAvg()};
             model.addRow((Vector<?>) row);
         }
     }
-     public void showDetail(int index) {
+
+    public void showDetail(int index) {
         fullName.setText(list.get(index).getFullname());
         msv.setText(list.get(index).getMsv());
         mon.setText(String.valueOf(list.get(index).getMon()));
         dtx.setText(String.valueOf(list.get(index).getDtx()));
         dgk.setText(String.valueOf(list.get(index).getDgk()));
         dck.setText(String.valueOf(list.get(index).getDck()));
-        avg.setText(String.valueOf(list.get(index).getAvg()));
+        dtk.setText(String.valueOf(list.get(index).getAvg()));
     }
-     public void loadDbToTable() {
+
+    public void loadDbToTable() {
         try {
             model.setRowCount(0);
-            String sql = "SELECT TOP 3 STUDENTS.MASV,HOTEN,TIENGANH,TINHOC,GDTC,(TIENGANH+TINHOC+GDTC)/3 AS TBM FROM STUDENTS JOIN GRADE\n"
-                    + " ON STUDENTS.MASV = GRADE.MASV ORDER BY TBM DESC";
+            String sql = "SELECT TOP 3 STUDENTS.MSV,HoTen,Mon,DiemTX,DiemGK,DiemCK,DiemTK\n"
+                    + " ON SV.MSV = DiemSV.MSV ORDER BY TBM DESC";
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 Vector row = new Vector();
                 row.add(rs.getString("MSV"));
                 row.add(rs.getString("HoTen"));
-                row.add(Double.parseDouble(rs.getString("TIENGANH")));
-                row.add(Double.parseDouble(rs.getString("TINHOC")));
-                row.add(Double.parseDouble(rs.getString("GDTC")));
-                row.add(Double.parseDouble(rs.getString("TBM")));
+                row.add(rs.getString("Mon"));
+                row.add(Float.parseFloat(rs.getString("DiemTX")));
+                row.add(Float.parseFloat(rs.getString("DiemGK")));
+                row.add(Float.parseFloat(rs.getString("DiemCK")));
+                row.add(Float.parseFloat(rs.getString("DiemTK")));
                 model.addRow(row);
             }
             tblQLD.setModel(model);
@@ -96,6 +100,39 @@ public ArrayList<grade> getListGrade() {
             System.out.println(e);
         }
     }
+
+    public boolean deleteGrade() {
+        try {
+            String ma = msv.getText();
+            String sql = "DELETE FROM DiemSV WHERE MSV = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, ma);
+            ps.execute();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean updateGrade() {
+
+        try {
+            String ma = msv.getText();
+            String sql = "UPDATE DiemSV SET Mon = ?, DiemTX = ?, DiemGK = ?, DiemCK = ?, DiemTK = ? WHERE MSV = ? ";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, mon.getText());
+            ps.setString(2, dtx.getText());
+            ps.setString(3, dgk.getText());
+            ps.setString(4, dck.getText());
+            ps.setString(5, dtk.getText());
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -118,7 +155,7 @@ public ArrayList<grade> getListGrade() {
         detele = new javax.swing.JButton();
         update = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        avg = new javax.swing.JLabel();
+        dtk = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblQLD = new javax.swing.JTable();
 
@@ -145,16 +182,24 @@ public ArrayList<grade> getListGrade() {
         });
 
         btNew.setText("New");
+        btNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNewActionPerformed(evt);
+            }
+        });
 
         save.setText("Save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
 
         detele.setText("Detele");
 
         update.setText("Update");
 
         jLabel3.setText("Điểm trung bình");
-
-        avg.setText("jLabel8");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -203,7 +248,7 @@ public ArrayList<grade> getListGrade() {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(avg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(dtk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(65, 65, 65))
         );
         jPanel1Layout.setVerticalGroup(
@@ -242,7 +287,7 @@ public ArrayList<grade> getListGrade() {
                         .addGap(39, 39, 39))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(avg, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dtk, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
@@ -301,7 +346,42 @@ public ArrayList<grade> getListGrade() {
         // TODO add your handling code here:
     }//GEN-LAST:event_monActionPerformed
 
-    
+    private void btNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNewActionPerformed
+        fullName.setText(null);
+        msv.setText(null);
+        mon.setText(null);
+        dtx.setText(null);
+        dgk.setText(null);
+        dck.setText(null);
+        dtk.setText(null);
+    }//GEN-LAST:event_btNewActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        grade sv = new grade();
+        sv.fullname = fullName.getText();
+        sv.mon= mon.getText();
+        sv.dtx = Float.parseFloat(dtx.getText());
+        sv.dgk = Float.parseFloat(dgk.getText());
+        sv.dck = Float.parseFloat(dck.getText());
+        dtk.setText(String.valueOf(sv.getAvg()));
+        list.add(sv);
+        try {
+            String sql = "INSERT INTO DiemSV(MSV, Mon, DiemTX,DiemGK,DiemCK,DiemTK) VALUES ( ?, ?, ?, ?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, msv.getText());
+            ps.setString(2,mon.getText());
+            ps.setFloat(3, sv.dtx);
+            ps.setFloat(4, sv.dgk);
+            ps.setFloat(5, sv.dck);
+            ps.setFloat(6,sv.avg);
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(rootPane, "Lưu thành công!");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        fillTable();
+    }//GEN-LAST:event_saveActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -335,11 +415,11 @@ public ArrayList<grade> getListGrade() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel avg;
     private javax.swing.JButton btNew;
     private javax.swing.JTextField dck;
     private javax.swing.JButton detele;
     private javax.swing.JTextField dgk;
+    private javax.swing.JLabel dtk;
     private javax.swing.JTextField dtx;
     private javax.swing.JTextField fullName;
     private javax.swing.JLabel jLabel1;
