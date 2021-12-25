@@ -81,9 +81,9 @@ public final class QLSV extends javax.swing.JFrame {
             ps.setString(2, fullName.getText());
             ps.setString(3, gender.getText());
             ps.setString(4, dob.getText());
-
             ps.setString(1, msv.getText());
             ps.executeUpdate();
+            
 
         } catch (Exception e) {
             System.out.println(e);

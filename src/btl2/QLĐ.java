@@ -48,7 +48,7 @@ public class QLĐ extends javax.swing.JFrame {
                 sv.setDtx(Float.parseFloat(rs.getString("DiemTX")));
                 sv.setDgk(Float.parseFloat(rs.getString("DiemGK")));
                 sv.setDck(Float.parseFloat(rs.getString("DiemCK")));
-
+                sv.setAvg(Float.parseFloat(rs.getString("DiemTK")));
                 list.add(sv);
             }
         } catch (Exception e) {

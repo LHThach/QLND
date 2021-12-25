@@ -142,7 +142,7 @@ public class Login extends javax.swing.JFrame {
             try {
                 String url = "jdbc:sqlserver://localhost:1433;databaseName=QLND;user=sa;password=1";
                 Connection con = DriverManager.getConnection(url);
-                String sql = "SELECT * FROM USERS WHERE USERNAME = ?";
+                String sql = "SELECT * FROM LOGIN WHERE TenDn = ?";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, userName.getText());
                 ResultSet rs = ps.executeQuery();
@@ -155,7 +155,7 @@ public class Login extends javax.swing.JFrame {
                     if (role.equals("GV")) {
                         JOptionPane.showMessageDialog(rootPane, "Đăng nhập thành công");
                         new QLĐ().setVisible(true);
-                    } else {
+                    } if(role.equals("SV")){
                         JOptionPane.showMessageDialog(rootPane, "Đăng nhập thành công");
                         new SV().setVisible(true);
                     }
